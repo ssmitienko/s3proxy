@@ -1,0 +1,29 @@
+{
+    "Locations": [
+        {
+            "Prefix": "/test/",
+            "StorageEndpoint": "mystorage.local",
+            "StorageAccessKey": "XXXXXXXXXXXXXXXX",
+            "StorageSecretAccessKey":"XXXXXXXXXXXXXXXX",
+            "StorageBucketName": "imagestorage",
+            "StorageBucketLocation": "us-east-1",
+            "StorageUseSSL": false,
+            "RegExpMatch": "/test/(.*)",
+            "RegExpSub": "/pub/$1",
+            "Expires": "1h10m10s",
+            "CacheControl": "no-cache, no-store, no-transform, must-revalidate, private, max-age=0",
+            "DropParams": true
+        },
+        {
+            "Prefix": "/pub/",
+            "StorageEndpoint": "mystorage.local",
+            "StorageAccessKey": "XXXXXXXXXXXXXXXX",
+            "StorageSecretAccessKey":"XXXXXXXXXXXXXXXX",
+            "StorageBucketName": "imagestorage",
+            "StorageBucketLocation": "us-east-1",
+            "StorageUseSSL": false,
+            "Expires": "",
+            "DropParams": false
+        }
+    ]
+}
