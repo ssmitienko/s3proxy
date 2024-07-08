@@ -3,8 +3,11 @@ package main
 import (
 	"bytes"
 	"context"
+	"errors"
 	"log"
+	"mime"
 	"net/http"
+	"net/url"
 	"strconv"
 	"strings"
 	"time"
@@ -38,33 +41,33 @@ func notallowed(w http.ResponseWriter, message string) {
 	http.Error(w, message, http.StatusMethodNotAllowed)
 }
 
+func getFileExtensionFromUrl(rawUrl string) (string, error) {
+	u, err := url.Parse(rawUrl)
+	if err != nil {
+		return "", err
+	}
+	pos := strings.LastIndex(u.Path, ".")
+	if pos == -1 {
+		return "", errors.New("couldn't find a period to indicate a file extension")
+	}
+	return u.Path[pos+1 : len(u.Path)], nil
+}
+
 func getContentTypeForExt(s string) string {
 
-	if strings.HasSuffix(s, "jpg") {
-		return "image/jpeg"
+	ext, err := getFileExtensionFromUrl(s)
+
+	if err != nil {
+		return "application/octet-stream"
 	}
 
-	if strings.HasSuffix(s, "jpeg") {
-		return "image/jpeg"
+	mimeType := mime.TypeByExtension("." + ext)
+
+	if mimeType == "" {
+		return "application/octet-stream"
 	}
 
-	if strings.HasSuffix(s, "gif") {
-		return "image/gif"
-	}
-
-	if strings.HasSuffix(s, "png") {
-		return "image/png"
-	}
-
-	if strings.HasSuffix(s, "webp") {
-		return "image/webp"
-	}
-
-	if strings.HasSuffix(s, "avif") {
-		return "image/avif"
-	}
-
-	return "application/octet-stream"
+	return mimeType
 }
 
 func proxyWorker(w http.ResponseWriter, r *http.Request) {
